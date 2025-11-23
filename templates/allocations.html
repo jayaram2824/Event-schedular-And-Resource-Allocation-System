@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% if allocation_to_edit %}
+  <div class="mb-4">
+    <h2>Edit Allocation</h2>
+    <form method="post" class="row g-3" action="{{ url_for('main.allocations') }}">
+      <input type="hidden" name="allocation_id" value="{{ allocation_to_edit.allocation_id }}" />
+      <div class="col-md-6">
+        <label for="event_id" class="form-label">Event</label>
+        <select id="event_id" name="event_id" class="form-select" required>
+          {% for e in events %}
+          <option value="{{ e.event_id }}" {% if allocation_to_edit.event_id == e.event_id %}selected{% endif %}>{{ e.title }} — {{ e.start_time.strftime('%b %d %Y %I:%M %p') }} → {{ e.end_time.strftime('%b %d %Y %I:%M %p') }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="resource_id" class="form-label">Resource</label>
+        <select id="resource_id" name="resource_id" class="form-select" required>
+          {% for r in resources %}
+          <option value="{{ r.resource_id }}" {% if allocation_to_edit.resource_id == r.resource_id %}selected{% endif %}>{{ r.resource_name }} ({{ r.resource_type }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-secondary" href="{{ url_for('main.allocations') }}">Cancel</a>
+      </div>
+    </form>
+  </div>
+  {% else %}
+  <div class="mb-4">
+    <h2>Assign a Resource to an Event</h2>
+    <form method="post" class="row g-3" action="{{ url_for('main.allocations') }}">
+      <p class="small text-muted">Pick an event and a resource, then click <strong>Assign</strong>.</p>
+      <div class="col-md-6">
+        <label for="event-select" class="form-label">Event</label>
+        <select id="event-select" class="form-select" name="event_id" required>
+          <option value="">— Choose an event —</option>
+          {% for e in events %}
+          <option value="{{ e.event_id }}">{{ e.event_id }} - {{ e.title }} — {{ e.start_time.strftime('%b %d, %Y %I:%M %p') }} → {{ e.end_time.strftime('%b %d, %Y %I:%M %p') }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="resource-select" class="form-label">Resource</label>
+        <select id="resource-select" class="form-select" name="resource_id" required>
+          <option value="">— Choose a resource —</option>
+          {% for r in resources %}
+          <option value="{{ r.resource_id }}">{{ r.resource_name }} ({{ r.resource_type }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Assign</button>
+      </div>
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="mt-4">
+    <h4>Current Allocations</h4>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Allocation</th>
+            <th scope="col">Event</th>
+            <th scope="col">Resource</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in allocations %}
+          <tr>
+            <td>#{{ a.allocation_id }}</td>
+            <td>
+              <div class="fw-semibold">{{ a.event.title }}</div>
+              <small class="text-muted">{{ a.event.start_time.strftime('%b %d, %Y %I:%M %p') }} → {{ a.event.end_time.strftime('%b %d, %Y %I:%M %p') }}</small>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ a.resource.resource_name }}</div>
+              <small class="text-muted">{{ a.resource.resource_type }}</small>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-secondary" href="{{ url_for('main.allocations', edit_id=a.allocation_id) }}">Edit</a>
+              <form method="post" action="{{ url_for('main.delete_allocation', allocation_id=a.allocation_id) }}" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this allocation?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-muted">There are no allocations yet. Use the form above to assign a resource.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+

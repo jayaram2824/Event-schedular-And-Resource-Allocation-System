@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="mb-4">
+    <h2>{{ 'Edit Resource' if resource_to_edit else 'New Resource' }}</h2>
+    <form method="post" action="{{ url_for('main.resources') }}">
+      {% if resource_to_edit %}
+      <input type="hidden" name="resource_id" value="{{ resource_to_edit.resource_id }}" />
+      {% endif %}
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input class="form-control" name="resource_name" required value="{{ resource_to_edit.resource_name if resource_to_edit else '' }}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" name="resource_type" required>
+          <option value="">— Choose a type —</option>
+          {% for rt in resource_types %}
+          <option value="{{ rt.lower() }}" {% if resource_to_edit and resource_to_edit.resource_type.lower() == rt.lower() %}selected{% endif %}>{{ rt }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn btn-primary">Save</button>
+      <a class="btn btn-secondary" href="{{ url_for('main.resources') }}">Cancel</a>
+    </form>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Resources</h2>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for resource in resources %}
+      <tr>
+        <td>{{ resource.resource_id }}</td>
+        <td>{{ resource.resource_name }}</td>
+        <td>{{ resource.resource_type }}</td>
+        <td>
+          <a class="btn btn-sm btn-secondary" href="{{ url_for('main.resources', edit_id=resource.resource_id) }}">Edit</a>
+          <form method="post" action="{{ url_for('main.delete_resource', resource_id=resource.resource_id) }}" style="display:inline" onsubmit="return confirm('Delete resource {{ resource.resource_name }}? This will remove related allocations.');">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="3">No resources yet. Click "New Resource" to add one.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
