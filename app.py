@@ -63,7 +63,7 @@ def events():
 
     edit_id = request.args.get("edit_id", type=int)
     event_to_edit = Event.query.get(edit_id) if edit_id else None
-    events = Event.query.order_by(Event.event_id).all()
+    events = Event.query.order_by(Event.start_time).all()
     return render_template(
         "events.html", events=events, event_to_edit=event_to_edit
     )
@@ -152,12 +152,12 @@ def allocations():
             allocation.event_id = event_id
             allocation.resource_id = resource_id
         else:
-            existing = EventResourceAllocation.query.filter_by(
-                event_id=event_id, resource_id=resource_id
-            ).first()
-            if existing:
-                flash("This allocation already exists.", "warning")
-                return redirect(url_for("main.allocations"))
+            # existing = EventResourceAllocation.query.filter_by(
+            #     event_id=event_id, resource_id=resource_id
+            # ).first()
+            # if existing:
+            #     flash("This allocation already exists.", "warning")
+            #     return redirect(url_for("main.allocations"))
 
             allocation = EventResourceAllocation(
                 event_id=event_id,
