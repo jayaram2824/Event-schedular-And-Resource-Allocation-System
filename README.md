@@ -3,6 +3,12 @@
 As per the given requirements, the Event, Resource, Allocation, and Report modules were successfully developed.
 The main highlight of this project is the conflict detection logic, which ensures that whenever a resource is already allocated during a specific time, the system automatically throws a conflict error to prevent overlapping bookings.
 
+Video Link:
+
+https://www.linkedin.com/posts/jayaraman-r-50571a376_python-flask-fullstackdevelopment-activity-7398584631177994240-fszS?utm_medium=ios_app&rcm=ACoAAF0Cy1UBni0JhLY9wrfyVUSgIXEbj7XQC4c&utm_source=social_share_send&utm_campaign=copy_link
+
+
+
 Screenshots :
 
 Event :
