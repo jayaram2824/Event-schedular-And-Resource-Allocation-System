@@ -77,7 +77,6 @@ def delete_event(event_id: int):
     return redirect(url_for("main.events"))
 
 
-
 @main_bp.route("/resources", methods=["GET", "POST"])
 def resources():
     if request.method == "POST":
@@ -117,6 +116,7 @@ def delete_resource(resource_id: int):
     db.session.commit()
     return redirect(url_for("main.resources"))
 
+
 @main_bp.route("/allocations", methods=["GET", "POST"])
 def allocations():
     events = Event.query.order_by(Event.title).all()
@@ -151,14 +151,8 @@ def allocations():
             allocation = EventResourceAllocation.query.get_or_404(allocation_id)
             allocation.event_id = event_id
             allocation.resource_id = resource_id
-        else:
-            # existing = EventResourceAllocation.query.filter_by(
-            #     event_id=event_id, resource_id=resource_id
-            # ).first()
-            # if existing:
-            #     flash("This allocation already exists.", "warning")
-            #     return redirect(url_for("main.allocations"))
 
+        else:
             allocation = EventResourceAllocation(
                 event_id=event_id,
                 resource_id=resource_id,
